@@ -632,7 +632,6 @@ def run_calib_bundle_adjustment(points_3d_df, points_2d_df, cameras: List[Camera
     new_points_3d_df['z'] = new_points_3d[:, 2]
     return new_points_3d_df
 
-
 def run_point_bundle_adjustment(points_3d_df, points_2d_df, cameras: List[Camera]):
     n_cameras = len(cameras)
     camera_params = []

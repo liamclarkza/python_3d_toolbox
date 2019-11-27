@@ -40,7 +40,7 @@ e.g. for a calibration board with shape 9x6 and a square edge length of 88mm, th
 ```python
 # finds corners located in the videos located in 
 # <project_dir>/calibration directory
-find_corners(project_dir, (9,6), 0.088)
+ctb.find_corners(project_dir, (9,6), 0.088)
 ```
 
 ### __2.2. Intrinsic calibration__
@@ -49,7 +49,7 @@ The cameras need to be calibrated using the function below. The camera model and
 # calibrates the cameras using the points found
 # from find_corners which were saved in the
 # <project_dir>/calibration directory
-calibrate_intrinsics(project_dir, 'fisheye', (2704, 1520))
+ctb.calibrate_intrinsics(project_dir, 'fisheye', (2704, 1520))
 ```
 ### __2.3. Extrinsic calibration__
 To calibrate the extrinsic camera parameters, use the function below. This funciton can optionally output a 3D video of the calibration process allowing you to check for any obvious errors.
@@ -58,13 +58,13 @@ To calibrate the extrinsic camera parameters, use the function below. This funci
 # from find_corners() and camera intrinsic parameters from 
 # calibrate_intrinsics() which were saved in the
 # <project_dir>/calibration directory
-calibrate_extrinsics(project_dir, output_video_filepath='~/Desktop/test.mp4')
+ctb.calibrate_extrinsics(project_dir, output_video_filepath='~/Desktop/test.mp4')
 ```
 
 ## __3. 2D to 3D Reconstruction__
 At the moment, only I have only implemented a wrapper for parsing 2D data from DeepLabCut to 3D data. More coming soon
 ### __3.1 DeepLabCut__
-To plot data from DLC in 3D, use the function below:
+To plot data from DLC in 3D, use the function below. The supported formats for `3d_point_df` are .csv, .pickle and .h5.
 ```python
 files = [
     './07_03_2019MenyaRun1CAM1DLC_resnet50_CheetahOct14shuffle1_200000.h5',
@@ -74,5 +74,5 @@ files = [
     './07_03_2019MenyaRun1CAM5DLC_resnet50_CheetahOct14shuffle1_200000.h5',
     './07_03_2019MenyaRun1CAM6DLC_resnet50_CheetahOct14shuffle1_200000.h5',
     ]
-dlc_to_3d(project_dir, files, output_video_filepath='/Users/liam/Desktop/testDLC.mp4')
+ctb.dlc_to_3d(project_dir, files, output_3d_point_df_filepath='/Users/liam/Desktop/3d_points.csv', output_video_filepath='/Users/liam/Desktop/testDLC.mp4')
 ```
