@@ -161,3 +161,47 @@ def dlc_to_3d(project_dir, dlc_filepaths, output_3d_point_df_filepath=None, outp
         print(f"Done. Video saved to {output_video_filepath}")
 
 
+def points_2d_df_to_3d(project_dir, points_2d_df, output_3d_point_df_filepath=None, output_video_filepath=None):
+    cameras = load_cameras(project_dir)
+    print("Creating initial 3D estimates for optimisation...")
+    pairwise_points_3d_df = camera.get_pairwise_3d_points(points_2d_df, cameras)
+    print("Performing sparse bundle adjustment...")
+    points_3d_df = camera.run_point_bundle_adjustment(pairwise_points_3d_df, points_2d_df, cameras)
+    print("Done!")
+    if output_3d_point_df_filepath:
+        output_3d_point_df_filepath = os.path.expanduser(output_3d_point_df_filepath)
+        print("Saving 3D points...")
+        if str(output_3d_point_df_filepath).endswith('.csv'):
+            points_3d_df.to_csv(output_3d_point_df_filepath)
+        elif str(output_3d_point_df_filepath).endswith('.pickle'):
+            points_3d_df.to_pickle(output_3d_point_df_filepath)
+        elif str(output_3d_point_df_filepath).endswith('.h5'):
+            points_3d_df.to_hdf(output_3d_point_df_filepath)
+        else:
+            print("Unsupported export format")
+        print(f"Done. 3D points saved to {output_3d_point_df_filepath}")
+    if output_video_filepath:
+        output_video_filepath = os.path.expanduser(output_video_filepath)
+        print("Creating video...")
+        plotting.create_animation(points_3d_df, output_video_filepath, cameras)
+        print(f"Done. Video saved to {output_video_filepath}")
+
+if __name__=='__main__':
+    project_dir = '/Users/liam/Desktop/project_dir'
+    d = '/Users/liam/Cloud/Varsity/MSc/Software/CameraToolbox/dlc/'
+    files = [
+        '07_03_2019MenyaRun1CAM1DeepCut_resnet50_CheetahApr2shuffle0_300000.h5',
+        '07_03_2019MenyaRun1CAM2DeepCut_resnet50_CheetahApr2shuffle0_300000.h5',
+        '07_03_2019MenyaRun1CAM3DeepCut_resnet50_CheetahApr2shuffle0_300000.h5',
+        '07_03_2019MenyaRun1CAM4DeepCut_resnet50_CheetahApr2shuffle0_300000.h5',
+        '07_03_2019MenyaRun1CAM5DeepCut_resnet50_CheetahApr2shuffle0_300000.h5',
+        '07_03_2019MenyaRun1CAM6DeepCut_resnet50_CheetahApr2shuffle0_300000.h5'
+    ]
+    fp = [d+f for f in files]
+    print(fp)
+    points_2d_df = create_dlc_points_2d_file(fp)
+    #You can then modify the dataframe to include certain points
+    #e.g.
+    points_2d_df = points_2d_df[points_2d_df['likelihood']>0.9]
+    #Plot the 3D points
+    points_2d_df_to_3d(project_dir, points_2d_df, output_3d_point_df_filepath='/Users/liam/Desktop/3d_points.csv', output_video_filepath='/Users/liam/Desktop/testDLC.mp4')

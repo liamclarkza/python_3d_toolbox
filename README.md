@@ -63,10 +63,11 @@ ctb.calibrate_extrinsics(project_dir, output_video_filepath='~/Desktop/test.mp4'
 
 ## __3. 2D to 3D Reconstruction__
 At the moment, only I have only implemented a wrapper for parsing 2D data from DeepLabCut to 3D data. More coming soon
+
 ### __3.1 DeepLabCut__
 To plot data from DLC in 3D, use the function below. The supported formats for `3d_point_df` are .csv, .pickle and .h5.
 ```python
-files = [
+dlc_filepaths = [
     './07_03_2019MenyaRun1CAM1DLC_resnet50_CheetahOct14shuffle1_200000.h5',
     './07_03_2019MenyaRun1CAM2DLC_resnet50_CheetahOct14shuffle1_200000.h5',
     './07_03_2019MenyaRun1CAM3DLC_resnet50_CheetahOct14shuffle1_200000.h5',
@@ -74,5 +75,24 @@ files = [
     './07_03_2019MenyaRun1CAM5DLC_resnet50_CheetahOct14shuffle1_200000.h5',
     './07_03_2019MenyaRun1CAM6DLC_resnet50_CheetahOct14shuffle1_200000.h5',
     ]
-ctb.dlc_to_3d(project_dir, files, output_3d_point_df_filepath='/Users/liam/Desktop/3d_points.csv', output_video_filepath='/Users/liam/Desktop/testDLC.mp4')
+ctb.dlc_to_3d(project_dir, dlc_filepaths, output_3d_point_df_filepath='/Users/liam/Desktop/3d_points.csv', output_video_filepath='/Users/liam/Desktop/testDLC.mp4')
+```
+
+## __3.2 DeepLabCut with Constraints__
+To plot data from a DLC dataframe (with custom constraints) in 3D, use the function below. The supported formats for `3d_point_df` are .csv, .pickle and .h5.
+```python
+    dlc_filepaths = [
+        './07_03_2019MenyaRun1CAM1DLC_resnet50_CheetahOct14shuffle1_200000.h5',
+        './07_03_2019MenyaRun1CAM2DLC_resnet50_CheetahOct14shuffle1_200000.h5',
+        './07_03_2019MenyaRun1CAM3DLC_resnet50_CheetahOct14shuffle1_200000.h5',
+        './07_03_2019MenyaRun1CAM4DLC_resnet50_CheetahOct14shuffle1_200000.h5',
+        './07_03_2019MenyaRun1CAM5DLC_resnet50_CheetahOct14shuffle1_200000.h5',
+        './07_03_2019MenyaRun1CAM6DLC_resnet50_CheetahOct14shuffle1_200000.h5',
+        ]
+    points_2d_df = utils.create_dlc_points_2d_file(dlc_filepaths)
+    #You can then modify the dataframe to include certain points
+    #e.g.
+    points_2d_df = points_2d_df[points_2d_df['likelihood']>0.9]
+    #Plot the 3D points
+    ctb.points_2d_df_to_3d(project_dir, points_2d_df, output_3d_point_df_filepath='/Users/liam/Desktop/3d_points.csv', output_video_filepath='/Users/liam/Desktop/testDLC.mp4')
 ```
