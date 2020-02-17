@@ -7,7 +7,7 @@ import pickle
 from scipy.sparse import lil_matrix
 from scipy.optimize import least_squares
 from typing import List
-from progress_bar import print_progress_bar, create_multiproc_bar
+from .progress_bar import print_progress_bar, create_multiproc_bar
 import pandas as pd
 import itertools
 import time

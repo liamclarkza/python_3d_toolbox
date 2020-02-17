@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from typing import List
-from camera import Camera
+from .camera import Camera
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, FFMpegWriter
 from mpl_toolkits.mplot3d import Axes3D

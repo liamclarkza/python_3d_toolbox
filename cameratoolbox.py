@@ -1,6 +1,6 @@
-import camera
-import plotting
-from utils import create_dlc_points_2d_file
+from . import camera
+from . import plotting
+from .utils import create_dlc_points_2d_file
 import logging
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
