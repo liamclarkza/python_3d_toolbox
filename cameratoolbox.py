@@ -8,23 +8,39 @@ import pandas as pd
 import numpy as np
 import pickle
 import os
+from typing import List
+from collections import namedtuple
+import cv2
 
 def save_cameras(project_dir, cameras, path=None):
     if path==None:
         path = os.path.join(os.path.expanduser(project_dir), "calibration/cameras")
     for cam in cameras:
-        with open(os.path.join(path, f"{cam.name}.pickle"), 'wb') as file:
-            pickle.dump(cam, file)
+        with open(os.path.join(path, f"{cam.name}.pickle"), 'wb') as f:
+            pickle.dump(cam, f)
     print(f"Saved cameras to {path}")
+
+def dump_camera_params(cameras: List[camera.Camera], filepath):
+    R = []
+    T = []
+    D = []
+    K = []
+    for c in cameras:
+        R.append(cv2.Rodrigues(c.R)[0])
+        T.append(c.T)
+        D.append(c.D)
+        K.append(c.K)
+    with open(filepath, 'wb') as f:
+        pickle.dump({'R':R, 'T':T, 'D':D, 'K':K}, f)
 
 def load_cameras(project_dir, path=None):
     if path==None:
         path = os.path.join(os.path.expanduser(project_dir), "calibration/cameras")
-    camera_filepaths = [os.path.join(path, cam) for cam in sorted(os.listdir(path))]
+    camera_filepaths = [os.path.join(path, cam) for cam in sorted(os.listdir(path)) if cam.endswith('.pickle')]
     cameras = []
     for cam_path in camera_filepaths:
-        with open(cam_path, 'rb') as file:
-            cameras.append(pickle.load(file))
+        with open(cam_path, 'rb') as f:
+            cameras.append(pickle.load(f))
     return cameras
 
 def save_points_2d_df(project_dir, points_2d_df, path=None):
@@ -108,6 +124,7 @@ def calibrate_intrinsics(project_dir, camera_model, camera_resolution, points_2d
     camera.calibrate_intrinsics_multi(points_2d_df, cameras, calib_board)
     print("Done.")
     save_cameras(project_dir, cameras)
+    return cameras
 
 
 

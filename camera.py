@@ -33,7 +33,7 @@ class CalibrationBoard:
 
 
 # ============================ Camera Class ============================
-class Camera:
+class Camera(object):
     name = ''
     resolution = (0, 0)
     model = ''
@@ -46,7 +46,6 @@ class Camera:
         self.name = name
         self.model = model
         self.resolution = resolution
-
 
     def calibrate_intrinsics(self, img_points, calib_board: CalibrationBoard):
         self.K, self.D, _ = calibrate_intrinsics(img_points, self.resolution, self.model, calib_board)
@@ -294,7 +293,7 @@ def create_calib_points_2d(vid_filepaths, calib_board: CalibrationBoard, frame_i
     points_2d_df = pd.DataFrame()
     for i, v in enumerate(vid_filepaths):
         print(f"Processing video {i+1} of {n_videos}: {v}")
-        df = create_calib_df_par(v, calib_board, frame_indices)
+        df = create_calib_df(v, calib_board, frame_indices)
         df["camera"] = i
         points_2d_df = pd.concat((points_2d_df, df), ignore_index=True)
     return points_2d_df
